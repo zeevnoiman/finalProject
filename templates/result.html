@@ -1,0 +1,37 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+        <main>
+
+            <div class="jumbotron">
+
+                <h1>
+                    RESULT
+                </h1>
+                <p> Name:  {{patient.firstName}} </p>
+                <p> Last Name: {{ patient.lastName }}</p>
+                <p> ID: {{ patient.id }}</p>
+                <p> Gender:{{patient.gender}} </p>
+                <p> Birthday:{{patient.birthday}}</p>
+                <p> Exam 1 results:{{patient.exam1}}</p>
+                <p> Exam 2 results:{{patient.exam2}}</p>
+                <p> Exam 3 results:{{patient.exam3}}</p>
+                <p> Parameters taken from the bone:{{patient.parameters}}</p>
+                <p> Model choosen to prediction:{{patient.modelName}} </p>
+                <p> Primary diagnostic: {{ patient.diagnostic }}</p>
+                <p> Model diagnostic: {{ patient.prediction }}</p>
+                
+            </div>
+
+        </main>
+
+        <footer>
+                {% block footer %}
+                <p class="text-center text-muted">© Aryeh Nigri   -   Zeev Noiman</p>           
+                {% endblock %}
+        </footer>
+        
+    </body>
+
+</html>

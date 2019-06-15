@@ -1,0 +1,314 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* Set the form's display to inline-block (auto-sizes to content), 
+left and right margins to auto (centers it horizontally), 
+and text-align to left (or else its children will be center-aligned too). */
+
+    .formWrapper {
+        text-align: center;
+        display: block;
+    }
+
+    .myForm {
+        display: inline-block;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+
+        background: rgb(173, 215, 229);
+        border-radius: 20px;
+        padding: 2%;
+        width: 75%;
+    }
+
+    .title {
+        text-align: center
+    }
+
+    .name input {
+        width: 47%;
+        margin-right: 2%;
+
+    }
+
+    .gender,
+    .birthday {
+        float: left;
+        width: 50%;
+        text-align: center;
+    }
+
+    .gender input {
+        width: 5%;
+    }
+
+    .exams input {
+        width: 96%;
+    }
+
+    .inputImage input {
+        width: 100%;
+    }
+
+    .inputImage .image {
+        margin-top: 10pt;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    img {
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+    }
+
+    .submit {
+        text-align: right;
+        margin-right: 15%;
+    }
+
+    .model {
+        border: 1px gray;
+        background-color: rgb(131, 188, 207);
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+
+    #parameters {
+        display: none;
+    }
+</style>
+
+<div class="formWrapper">
+    <form action="http://localhost:5000/form" id="userForm" method="post" class="myForm">
+        <div>
+            <!-- Title -->
+            <div class="title">
+                <h2>Diagnosis Form</h2>
+            </div>
+
+            <!-- Patient Name -->
+            <div class="name">
+                <div>
+                    <h4>Patient's Name</h4>
+                </div>
+                <div>
+                    <input required type="text" name="firstName" id="firstName" placeholder="First">
+                    <input required type="text" name="lastName" id="lastName" placeholder="Last">
+                    <div>
+                        <h4>ID</h4>
+                    </div>
+                    <input required type="number" name="id" id="id" placeholder="id" min=100000>
+                </div>
+            </div>
+
+
+            <div>
+
+                <!-- Gender -->
+                <div class="gender">
+                    <div>
+                        <h4>Gender</h4>
+                    </div>
+                    <div>
+                        <input required type="radio" name="gender" value="male" id="genderMale"><label
+                            for="genderMale">Male</label>
+                        <input required type="radio" name="gender" value="female" id="genderFemale"><label
+                            for="genderFemale">Female</label>
+                    </div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="birthday">
+                    <div>
+                        <h4>Date of Birth</h4>
+                    </div>
+                    <div>
+                        <input required type="date" name="birthday" id="birthday">
+                    </div>
+                </div>
+
+            </div>
+
+            <br><br><br>
+
+            <!-- Exams -->
+            <div class="exams">
+                <div>
+                    <h4>Exam 1</h4>
+                </div>
+                <div>
+                    <input type="text" name="exam1" id="exam1" placeholder="Blood Test">
+                </div>
+
+                <div>
+                    <h4>Exam 2</h4>
+                </div>
+                <div>
+                    <input type="text" name="exam2" id="exam2" placeholder="Urine Test">
+                </div>
+
+                <div>
+                    <h4>Exam 3</h4>
+                </div>
+                <div>
+                    <input type="text" name="exam3" id="exam3" placeholder="Density Test">
+                </div>
+
+            </div>
+
+            <div>
+                <h4>Primary Diagnostic</h4>
+            </div>
+            <div>
+                <input type="radio" name="diagnostic" value="1"> 1<br>
+                <input type="radio" name="diagnostic" value="3"> 3<br>
+            </div>
+
+            <!-- PACS Image -->
+            <div class="inputImage">
+                <div>
+                    <h4>PACS Image</h4>
+                </div>
+                <div>
+                    <input type="file" class="btn btn-info btn-lg" name="pacsFile" id="pacsFile" optional
+                        onchange="showPacsImage(this.files)">
+                </div>
+                <div class="image" id="pacsImage"></div>
+            </div>
+            <br>
+            <div>
+                <!-- Trigger the modal with a button -->
+                <button type="button"  class="btn btn-info btn-lg" data-backdrop="static" data-toggle="modal"
+                    data-target="#roiModal">Roi
+                    identification</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="roiModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">ROI </h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>here have to be the picture of the ROI</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div>
+                <!-- Trigger the modal with a button -->
+                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-backdrop="static"
+                    data-target="#improvedImageModal">Improve The Image</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="improvedImageModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Image after processment </h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>here have to be the improved image</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div>
+                <!-- Trigger the modal with a button -->
+                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-backdrop="static"
+                    data-target="#propertiesModal">calculate the properties</button>
+                <textarea required readonly name="parameters" id="parameters" rows="7" cols="40" form="userForm"
+                    placeholder="Parameters"></textarea>
+                <!-- Modal -->
+                <div class="modal fade" id="propertiesModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">All the properties </h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>here have to be a table with all the properties calculated</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button type="button" id="confirmPropeties" class="btn btn-default"
+                                    data-dismiss="modal">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="model">
+                <div>
+                    <h4>Model to Use to Predict Diagnostic</h4>
+                </div>
+                <input required type="text" name="modelName" id="model" placeholder="Name of the Model">
+            </div>
+            <!-- SUBMIT -->
+            <div class="submit">
+                <input type="submit" class="btn btn-success" value="Submit">
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function showPacsImage(files) {
+        const pacsImage = files[0] //document.getElementById('pacsFile').files[0];
+        const img = document.createElement("img");
+        img.src = window.URL.createObjectURL(pacsImage);
+        // img.height = 450;
+        img.onload = function () {
+            window.URL.revokeObjectURL(this.src);
+        }
+        $('#pacsImage').append(img);
+    }
+
+    $('#confirmPropeties').click(function (e) {
+        parameters = document.querySelector('#parameters');
+        parameters.style.display = 'inline';
+        parameters.value = '212.1462745,7.406447631,0.000842895,-0.000156608,0.037600038,4.848049996'
+    })
+
+</script>  
+
+{% endblock %}
+<!-- 
+    TODO:
+    - por todas as fotos nos modals
+    - por as properties no modal
+    - depois q apertar no confirm das properties mandar as informacoes para o input "properties"
+    - acertar tods os botoes confirm e cancel dos modals
+ -->

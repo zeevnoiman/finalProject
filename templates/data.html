@@ -1,0 +1,294 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<style>
+    #container,
+    #buttondiv {
+        margin: 0 auto;
+        width: 80%;
+        overflow: auto;
+    }
+
+    div.gridtable {
+        margin: 0 auto;
+        width: 95%;
+        overflow: auto;
+        font-family: helvetica, arial, sans-serif;
+        font-size: 14px;
+        color: #333333;
+        border-width: 1px;
+        border-color: #666666;
+        border-collapse: collapse;
+        text-align: center;
+    }
+
+    div.gridtable th {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #59a5cc;
+    }
+
+    div.gridtable td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+    }
+
+    .badrowcount {
+        background-color: coral;
+    }
+
+    .notnumeric {
+        background-color: yellow;
+    }
+
+    .btn-graphs {
+        margin: 5px;
+        visibility: hidden;
+    }
+</style>
+
+<div id="buttondiv">
+    <div class="input-group mb-3">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="inputGroupFile02">
+            <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+        </div>
+        <div class="input-group-append">
+            <button class="input-group-text" id="viewfile">Upload</button>
+        </div>
+    </div>
+    <!-- <input type="button" class="btn btn-info" id="viewfile" value="Import file" /> -->
+    <br><br>
+</div>
+
+<button id='algoCompare' class='btn btn-info btn-graphs'>Comparison Graph</button>
+<div id='compareImage'></div>
+
+<button id='histogram' class='btn btn-info btn-graphs'>histogram</button>
+<div id='histImage'></div>
+
+
+<button id='pca' class='btn btn-info btn-graphs'>pca</button>
+<div id='pcaImage'></div>
+
+
+<button id='correlation' class='btn btn-info btn-graphs'>correlation</button>
+<div id='corrImage'></div>
+
+
+<div class="container" id="container">
+
+    <div class="gridtable" id="tableMain">
+
+    </div>
+
+    <div class="model" id="model">
+
+    </div>
+
+    <div class='fileName' id="fileName">
+
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $('#histogram').click(function () {
+        const histImage = document.querySelector("#histImage");
+        if ($("#img-hist").length == 0) {
+            const image = `<img id='img-hist' src="http://localhost:5000/histograma" > `
+            $(histImage).append(image);
+        } else {
+            if($("#img-hist").css('display') == 'none'){
+                $("#img-hist").css('display', 'inline');
+            }
+            else{
+                $("#img-hist").css('display', 'none');
+            }
+        }
+    })
+
+    $('#pca').click(function () {
+        const pcaImage = document.querySelector("#pcaImage");
+        
+        if ($("#img-pca").length == 0) {
+            const image = `<img id='img-pca' src="http://localhost:5000/pca" > `
+            $(pcaImage).append(image);
+        } else {
+            if($("#img-pca").css('display') == 'none'){
+                $("#img-pca").css('display', 'inline');
+            }
+            else{
+                $("#img-pca").css('display', 'none');
+            }
+        }
+        
+    })
+
+    $('#correlation').click(function () {
+        const corrImage = document.querySelector("#corrImage");
+       
+        if ($("#img-corr").length == 0) {
+            const image = `<img id='img-corr' src="http://localhost:5000/correlation" > `
+            $(corrImage).append(image);
+        } else {
+            if($("#img-corr").css('display') == 'none'){
+                $("#img-corr").css('display', 'inline');
+            }
+            else{
+                $("#img-corr").css('display', 'none');
+            }
+        }
+        
+    })
+
+    $('#algoCompare').click(function () {
+        const algoImage = document.querySelector("#compareImage");
+        
+        if ($("#img-algo").length == 0) {
+            const image = `<img id='img-algo' src="http://localhost:5000/comparison"> `
+            $(algoImage).append(image);
+        } else {
+            if($("#img-algo").css('display') == 'none'){
+                $("#img-algo").css('display', 'inline');
+            }
+            else{
+                $("#img-algo").css('display', 'none');
+            }
+        }
+        
+    })
+    
+    $('#inputGroupFile02').on('change', function () {
+        //get the file name
+        var fileName = $(this).val();
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    })
+    $(document).ready(function () {
+        $('#viewfile').click(function () {
+            var rdr = new FileReader();
+            rdr.onload = function (e) {
+                var content = e.target.result;
+                e.preventDefault();
+                fetch('http://localhost:5000/diagnosis', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            content: content,
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(function (data) {
+                        console.log(data);
+
+                        const keyRows = Object.keys(data);
+                        const numberOfKeys = keyRows.length;
+
+
+                        putHeaderIntoTable("Algorithm", "Mean", "Std.", "matrix confusion");
+                        putDataIntoTable(data, keyRows);
+
+
+                    }).then(function () {
+                        $('.btn-graphs').css('visibility', 'visible');
+                        const model = document.querySelector("#model");
+                        const modelConstruction = `<p>Do you want to build a model from one of them?</p> 
+                                                    <input type="text" name="modelName" id="algorithm" placeholder="Algorithm Name"><br><br>
+                                                    <input type="text" name="researcherName" id="name" placeholder="Your Name"> To recognize your model<br><br>
+                                                    <input type="button" class="btn btn-success buildModelBtn" value="Build Model">
+                                                    `
+                        $(model).append(modelConstruction);
+
+                    })
+            }
+            rdr.readAsText($("#inputGroupFile02")[0].files[0]);
+        });
+    });
+
+    let table = $("<table></table>");
+
+    function putHeaderIntoTable() {
+
+        let thead = "";
+        thead += "<thead><tr class='tableheader'>"; // open tags
+        for (var i = 0; i < arguments.length; i++) {
+            thead += "<th>" + arguments[i] + "</th>";
+        }
+        thead += "</tr></thead>"; // close tags
+        table.append(thead);
+    }
+
+    function putDataIntoTable(data, keyRows) {
+        const numberOfKeys = keyRows.length;
+
+        for (const key in data) {
+            var newrow = "";
+            //get the line into an array
+            var line = data[key];
+            console.log(line);
+
+            //get number of line
+            var numberOfItemsInLine = line.length;
+
+            // check if line is not empty
+            if (numberOfItemsInLine > 0) {
+                newrow += "<tr>"; // open tag
+                newrow += "<td>" + key + "</td>";
+
+                for (var col = 0; col < numberOfItemsInLine; col++) {
+                    newrow += "<td>" + line[col] + "</td>";
+                }
+
+                newrow += "</tr>"; // close tag                   
+                table.append(newrow);
+
+                console.log(table);
+                //table.append("<br>");
+                $('#tableMain').append(table);
+                //table = $("<table></table>");
+            }
+        }
+    }
+
+    $('#model').on('click', '.buildModelBtn', function (e) {
+        e.preventDefault();
+        const algorithmName = document.querySelector('#algorithm').value;
+        const researcherName = document.querySelector('#name').value;
+        console.log(algorithmName);
+
+        fetch('http://localhost:5000/createModel', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    researcherName: researcherName,
+                    algorithmName: algorithmName,
+                })
+            })
+            .then(function (res) {
+                return res.json()
+            })
+            .then(function (fileName) {
+                const divFile = document.querySelector('#fileName');
+                console.log(fileName);
+
+                $(divFile).append(`<h4>Your model is called ${fileName.fileName}</h4>
+                                            save this name for future use`)
+            });
+
+    })
+
+    //1 bom
+    //3 ruim
+</script>
+
+{% endblock %}

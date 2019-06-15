@@ -1,0 +1,106 @@
+<!-- views/partials/header.ejs -->
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        {% block head %}
+<meta charset="UTF-8">
+<title>Osteoporosis Automatic Diagnosis</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+    body {
+        padding-top: 1%;
+    }
+
+    .jumbotron {
+        overflow: auto;
+    }
+
+    .stud-info {
+        width: auto;
+        float: left;
+        text-align: center;
+        align-content: center;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid black;
+    }
+</style>
+
+        
+        {% endblock %}
+    </head>
+
+    <body class="container">
+
+        <header>
+            {% block header %}
+            
+<nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">
+                    <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
+                    OAD
+                </a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/data">Data Source</a></li>
+                <li><a href="/about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+            
+            {% endblock %}
+        </header>
+
+        <main>
+
+            <div class="jumbotron">
+                {% block form %}{% endblock %}
+            </div>
+
+        </main>
+
+        <footer>
+            {% block footer %}
+<p class="text-center text-muted">© Aryeh Nigri   -   Zeev Noiman</p>
+
+
+            {% endblock %}
+        </footer>
+        
+    </body> 
+</html> -->
+
+
+{% extends "index.html" %}
+{% block header %}
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">
+                <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
+                OAD
+            </a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/data">Data Source</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+{% endblock %}
