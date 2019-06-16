@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 {% block content %}
 
@@ -81,6 +80,39 @@ and text-align to left (or else its children will be center-aligned too). */
 
     #parameters {
         display: none;
+    }
+
+    div.gridtable {
+        margin: 0 auto;
+        width: 95%;
+        overflow: auto;
+        font-family: helvetica, arial, sans-serif;
+        font-size: 14px;
+        color: #333333;
+        border-width: 1px;
+        border-color: #666666;
+        border-collapse: collapse;
+        text-align: center;
+    }
+
+    div.gridtable th {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #59a5cc;
+    }
+
+    div.gridtable td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+    }
+
+    div.gridtable td input {
+        width: 100%;
+        height: 100%;
     }
 </style>
 
@@ -184,7 +216,7 @@ and text-align to left (or else its children will be center-aligned too). */
             <br>
             <div>
                 <!-- Trigger the modal with a button -->
-                <button type="button"  class="btn btn-info btn-lg" data-backdrop="static" data-toggle="modal"
+                <button type="button" class="btn btn-info btn-lg" data-backdrop="static" data-toggle="modal"
                     data-target="#roiModal">Roi
                     identification</button>
 
@@ -274,6 +306,10 @@ and text-align to left (or else its children will be center-aligned too). */
                 </div>
                 <input required type="text" name="modelName" id="model" placeholder="Name of the Model">
             </div>
+
+            <div class="gridtable" id="propertiesTable">
+
+            </div>
             <!-- SUBMIT -->
             <div class="submit">
                 <input type="submit" class="btn btn-success" value="Submit">
@@ -299,10 +335,51 @@ and text-align to left (or else its children will be center-aligned too). */
     $('#confirmPropeties').click(function (e) {
         parameters = document.querySelector('#parameters');
         parameters.style.display = 'inline';
-        parameters.value = '212.1462745,7.406447631,0.000842895,-0.000156608,0.037600038,4.848049996'
+        parameters.value = '101,212.1462745,7.406447631,0.000842895,-0.000156608,0.037600038,4.848049996'
     })
 
-</script>  
+    $('#model').on('change', function () {
+        //get the file name
+        var modelName = $(this).val();
+        console.log(modelName);
+
+        fetch('http://localhost:5000/modelProperties',
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    modelName
+                })
+            })
+            .then(res => res.json()
+            )
+            .then(properties => {
+                console.log(properties.properties);
+
+                props = properties.properties;
+
+                let table = $("<table></table>");
+                let thead = "";
+                let tbody = "";
+                tbody += "<tr>";
+                thead += "<thead><tr class='tableheader'>"; // open tags
+                for (var i = 0; i < props.length; i++) {
+                    thead += "<th>" + props[i] + "</th>";
+                    tbody += `<td><input type="text" name='${props[i]}'></td>`;
+                }
+                thead += "</tr></thead>"; // close tags
+                table.append(thead);
+                tbody += "</tr>";
+                table.append(tbody);
+
+                $("#propertiesTable").append(table);
+
+            })
+    })
+
+</script>
 
 {% endblock %}
 <!-- 

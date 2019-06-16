@@ -104,10 +104,10 @@
             const image = `<img id='img-hist' src="http://localhost:5000/histograma" > `
             $(histImage).append(image);
         } else {
-            if($("#img-hist").css('display') == 'none'){
+            if ($("#img-hist").css('display') == 'none') {
                 $("#img-hist").css('display', 'inline');
             }
-            else{
+            else {
                 $("#img-hist").css('display', 'none');
             }
         }
@@ -115,61 +115,62 @@
 
     $('#pca').click(function () {
         const pcaImage = document.querySelector("#pcaImage");
-        
+
         if ($("#img-pca").length == 0) {
             const image = `<img id='img-pca' src="http://localhost:5000/pca" > `
             $(pcaImage).append(image);
         } else {
-            if($("#img-pca").css('display') == 'none'){
+            if ($("#img-pca").css('display') == 'none') {
                 $("#img-pca").css('display', 'inline');
             }
-            else{
+            else {
                 $("#img-pca").css('display', 'none');
             }
         }
-        
+
     })
 
     $('#correlation').click(function () {
         const corrImage = document.querySelector("#corrImage");
-       
+
         if ($("#img-corr").length == 0) {
             const image = `<img id='img-corr' src="http://localhost:5000/correlation" > `
             $(corrImage).append(image);
         } else {
-            if($("#img-corr").css('display') == 'none'){
+            if ($("#img-corr").css('display') == 'none') {
                 $("#img-corr").css('display', 'inline');
             }
-            else{
+            else {
                 $("#img-corr").css('display', 'none');
             }
         }
-        
+
     })
 
     $('#algoCompare').click(function () {
         const algoImage = document.querySelector("#compareImage");
-        
+
         if ($("#img-algo").length == 0) {
             const image = `<img id='img-algo' src="http://localhost:5000/comparison"> `
             $(algoImage).append(image);
         } else {
-            if($("#img-algo").css('display') == 'none'){
+            if ($("#img-algo").css('display') == 'none') {
                 $("#img-algo").css('display', 'inline');
             }
-            else{
+            else {
                 $("#img-algo").css('display', 'none');
             }
         }
-        
+
     })
-    
+
     $('#inputGroupFile02').on('change', function () {
         //get the file name
         var fileName = $(this).val();
         //replace the "Choose a file" label
         $(this).next('.custom-file-label').html(fileName);
     })
+
     $(document).ready(function () {
         $('#viewfile').click(function () {
             var rdr = new FileReader();
@@ -177,14 +178,14 @@
                 var content = e.target.result;
                 e.preventDefault();
                 fetch('http://localhost:5000/diagnosis', {
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            content: content,
-                        })
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        content: content,
                     })
+                })
                     .then(res => res.json())
                     .then(function (data) {
                         console.log(data);
@@ -265,15 +266,15 @@
         console.log(algorithmName);
 
         fetch('http://localhost:5000/createModel', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    researcherName: researcherName,
-                    algorithmName: algorithmName,
-                })
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                researcherName: researcherName,
+                algorithmName: algorithmName,
             })
+        })
             .then(function (res) {
                 return res.json()
             })

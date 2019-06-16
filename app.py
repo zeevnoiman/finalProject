@@ -1,8 +1,8 @@
-from flask import Flask, send_file, make_response
-from flask import render_template
-from flask import request
+from flask import Flask, send_file, make_response, render_template, request
+from flask_cors import CORS
 import json
 import io
+import csv
 import pandas 
 import matplotlib
 matplotlib.use('Agg')
@@ -22,16 +22,13 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import cross_val_predict
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_predict, train_test_split
 import seaborn as sns
-from sklearn.externals import joblib 
-
-
-
-
+import joblib
+import pickle
 
 app = Flask(__name__)
+CORS(app) # This will enable CORS for all routes
 
 @app.route('/')
 def index():
@@ -45,6 +42,7 @@ def data():
 def about():
     return render_template('about.html')
 
+
 @app.route('/diagnosis', methods=['GET', 'POST'])
 def diagnosis():
     if request.method == 'POST':
@@ -57,6 +55,7 @@ def diagnosis():
  
 def loadDataToFile(request):
     data = request.get_json()
+    # print(data)
     content = data['content']
     try:
         f = open("data.csv", "w")
@@ -201,10 +200,47 @@ def createModel():
         model.fit(data, target)
 
         myFileName = researcherName+algorithmName+'.pkl'
+
+        saveModelWithProperties(myFileName, df.columns.values.tolist())
+
         # Save the model as a pickle in a file 
         joblib.dump(model, myFileName) 
         fileNameJSON = transformToJSON({'fileName': myFileName})
         return fileNameJSON
+
+def saveModelWithProperties(modelName, propertiesList):
+    try:
+        json.load(open('Models_Properties.json'))
+    except:
+        f= open("Models_Properties.json","w+")
+        f.write("[]")
+        f.close()
+
+    data = json.load(open('Models_Properties.json'))
+
+    # append new item to data list
+    data.append({modelName: propertiesList})
+    # write list to file
+    json.dump(data, open('Models_Properties.json', 'w'))
+
+def getPropertiesFromModel(modelName):
+    dataList = json.load(open('Models_Properties.json'))
+    for data in dataList:
+        if(modelName in data):
+            return data[modelName]
+
+    return ''
+
+
+@app.route('/modelProperties',methods=['POST'])
+def modelProperties():
+    if request.method == 'POST':
+        data = request.get_json()
+        modelName = data['modelName']
+        propertiesJSON = transformToJSON({'properties': getPropertiesFromModel(modelName)})
+        
+        print(propertiesJSON)
+        return propertiesJSON
 
 def get_model(algo):
     if algo == 'LR':
@@ -249,6 +285,13 @@ def predict():
         modelName =request.form.get('modelName')
         diagnostic = request.form.get('diagnostic')
 
+        params=[]
+        properties = getPropertiesFromModel(modelName)
+        for prop in properties:
+            params.append(request.form.get(prop))
+
+        print(params)
+
         print(type(firstName))
         print(type(lastName))
         print(type(id))
@@ -259,14 +302,13 @@ def predict():
         print(type(modelName))
         print(type(diagnostic))
         try:
-            p = open("predict.csv", "w")
-            p.write(parameters)
-            p.close()
+            with open("predict.csv","w+") as f:
+                wr = csv.writer(f,delimiter=",")
+                wr.writerow(params)
         except:
             print("error creating and writing file")
 
-        names = ["meanGL", "SD-GL", "Smoothness", "ThirdMoment", "Uniformity", "Entropy"]
-        dataframe = pandas.read_csv('predict.csv', names=names)
+        dataframe = pandas.read_csv('predict.csv', names=properties)
         array = dataframe.values
         data = array[:,:]
 
@@ -287,12 +329,11 @@ def predict():
                 'exam1': exam1,
                 'exam2': exam2,
                 'exam3': exam3,
-                'parameters': parameters,
+                # 'parameters': parameters,
+                'parameters': str(params),
                 'modelName': modelName,
                 'diagnostic': diagnostic
             }
         responseJSON = transformToJSON(response)
         print(responseJSON)
         return render_template('result.html', patient = response)
-
-    
