@@ -339,7 +339,7 @@ and text-align to left (or else its children will be center-aligned too). */
     })
 
     $('#model').on('change', function () {
-        //get the file name
+        //get the model name
         var modelName = $(this).val();
         console.log(modelName);
 
@@ -356,7 +356,7 @@ and text-align to left (or else its children will be center-aligned too). */
             .then(res => res.json()
             )
             .then(properties => {
-                console.log(properties.properties);
+                console.log(properties);
 
                 props = properties.properties;
 

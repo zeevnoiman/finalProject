@@ -201,14 +201,15 @@ def createModel():
 
         myFileName = researcherName+algorithmName+'.pkl'
 
-        saveModelWithProperties(myFileName, df.columns.values.tolist())
+        saveModelWithProperties(myFileName, getColumnsNames(df))
 
         # Save the model as a pickle in a file 
         joblib.dump(model, myFileName) 
         fileNameJSON = transformToJSON({'fileName': myFileName})
         return fileNameJSON
 
-def saveModelWithProperties(modelName, propertiesList):
+def saveModelWithProperties(modelName, properties):
+    propertiesList = properties.tolist()
     try:
         json.load(open('Models_Properties.json'))
     except:

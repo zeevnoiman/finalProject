@@ -1,1 +1,1 @@
-[{"brunoLR.pkl": ["Bone", "meanGL", "SD-GL", "Smoothness", "ThirdMoment", "Uniformity", "Entropy"]}, {"najmanLDA.pkl": ["Bone", "meanGL", "SD-GL", "Smoothness", "ThirdMoment", "Uniformity", "Entropy"]}]
+[{"brunoLR.pkl": ["Bone", "meanGL", "SD-GL", "Smoothness", "ThirdMoment", "Uniformity", "Entropy"]}, {"najmanLDA.pkl": ["Bone", "meanGL", "SD-GL", "Smoothness", "ThirdMoment", "Uniformity", "Entropy"]}, {"najmanAdaBoost.pkl": ["Bone", "meanGL", "SD-GL", "Smoothness", "ThirdMoment", "Uniformity", "Entropy"]}]
