@@ -148,25 +148,25 @@
     })
 
     $('#algoCompare').click(function () {
+        const image = `<img id='img-algo' src="http://localhost:5000/comparison"> `
         const algoImage = document.querySelector("#compareImage");
+        $(algoImage).append(image);
 
-        if ($("#img-algo").length == 0) {
-            const image = `<img id='img-algo' src="http://localhost:5000/comparison"> `
+        if ($("#img-algo").css('display') == 'none') {
+            algoImage.remove();
             $(algoImage).append(image);
-        } else {
-            if ($("#img-algo").css('display') == 'none') {
-                $("#img-algo").css('display', 'inline');
-            }
-            else {
-                $("#img-algo").css('display', 'none');
-            }
+            $("#img-algo").css('display', 'inline');
         }
+        else {
+            $("#img-algo").css('display', 'none');
+        }
+
 
     })
 
     $('#inputGroupFile02').on('change', function () {
         //get the file name
-        var fileName = $(this).val().replace('C:\\fakepath\\' , " ");
+        var fileName = $(this).val().replace('C:\\fakepath\\', " ");
         //replace the "Choose a file" label
         $(this).next('.custom-file-label').html(fileName);
     })
@@ -194,7 +194,7 @@
                         const numberOfKeys = keyRows.length;
 
 
-                        putHeaderIntoTable("Algorithm", "Mean", "Std.", "matrix confusion");
+                        putHeaderIntoTable("Algorithm", "Average Hit", "Average's Std.", "Matrix Confusion");
                         putDataIntoTable(data, keyRows);
 
 

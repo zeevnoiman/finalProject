@@ -116,7 +116,7 @@ def machineLearning(data, target):
         y_train_pred = cross_val_predict(model, X_train, y_train, cv=3)
         results.append(cv_results)
         names.append(name)
-        keyValue[name] = [cv_results.mean(), cv_results.std(), str(confusion_matrix(y_train, y_train_pred))]
+        keyValue[name] = ["%.3f" % cv_results.mean(), "%.3f" % cv_results.std(), str(confusion_matrix(y_train, y_train_pred))]
         #msg += "%s: %f %f " % (name, cv_results.mean(), cv_results.std())
         #msg += str(confusion_matrix(y_train, y_train_pred)) +"-\n"
         print(name + "done ********************")
