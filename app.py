@@ -97,12 +97,7 @@ def machineLearning(data, target):
     models.append(("Decision Tree", DecisionTreeClassifier()))
     models.append(("Naive Bayes", GaussianNB()))
     models.append(("Linear SVM", SVC(kernel="linear", C=0.025)))
-    models.append(("Quadratic Discriminant", QuadraticDiscriminantAnalysis()))
-    models.append(("RBF_SVM", SVC(gamma=2, C=1)))
-    models.append(("Gaussian Process", GaussianProcessClassifier(1.0 * RBF(1.0))))
-    models.append(("Neural Network", MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)))
-    models.append(("Random Forest", RandomForestClassifier(max_depth=5, n_estimators=10)))
-    models.append(("Ada Boost", AdaBoostClassifier()))
+    models.append(("Quadratic Discriminant", QuadraticDiscriminantAnat
     X_train, X_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=seed)
     # evaluate each model in turn
     results = []
