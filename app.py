@@ -91,18 +91,18 @@ def machineLearning(data, target):
     seed = 7
     # prepare models
     models = []
-    models.append(('LR', LogisticRegression(solver='lbfgs')))
-    models.append(('LDA', LinearDiscriminantAnalysis()))
-    models.append(("QDA", QuadraticDiscriminantAnalysis()))
-    models.append(('"KNN"', KNeighborsClassifier(3)))
-    models.append(("DecisionTree", DecisionTreeClassifier()))
-    models.append(("NaiveBayes", GaussianNB()))
-    models.append(("LinearSVM", SVC(kernel="linear", C=0.025)))
+    models.append(('Logistic Regression', LogisticRegression(solver='lbfgs')))
+    models.append(('Linear Discriminant', LinearDiscriminantAnalysis()))
+    models.append(("K Neighbors Classifier", KNeighborsClassifier(3)))
+    models.append(("Decision Tree", DecisionTreeClassifier()))
+    models.append(("Naive Bayes", GaussianNB()))
+    models.append(("Linear SVM", SVC(kernel="linear", C=0.025)))
+    models.append(("Quadratic Discriminant", QuadraticDiscriminantAnalysis()))
     models.append(("RBF_SVM", SVC(gamma=2, C=1)))
-    models.append(("GaussianProcess", GaussianProcessClassifier(1.0 * RBF(1.0))))
-    models.append(("NeuralNet", MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)))
-    models.append(("RandomForest", RandomForestClassifier(max_depth=5, n_estimators=10)))
-    models.append(("AdaBoost", AdaBoostClassifier()))
+    models.append(("Gaussian Process", GaussianProcessClassifier(1.0 * RBF(1.0))))
+    models.append(("Neural Network", MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)))
+    models.append(("Random Forest", RandomForestClassifier(max_depth=5, n_estimators=10)))
+    models.append(("Ada Boost", AdaBoostClassifier()))
     X_train, X_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=seed)
     # evaluate each model in turn
     results = []
@@ -201,14 +201,15 @@ def createModel():
 
         myFileName = researcherName+algorithmName+'.pkl'
 
-        saveModelWithProperties(myFileName, df.columns.values.tolist())
+        saveModelWithProperties(myFileName, getColumnsNames(df))
 
         # Save the model as a pickle in a file 
         joblib.dump(model, myFileName) 
         fileNameJSON = transformToJSON({'fileName': myFileName})
         return fileNameJSON
 
-def saveModelWithProperties(modelName, propertiesList):
+def saveModelWithProperties(modelName, properties):
+    propertiesList = properties.tolist()
     try:
         json.load(open('Models_Properties.json'))
     except:
@@ -243,29 +244,29 @@ def modelProperties():
         return propertiesJSON
 
 def get_model(algo):
-    if algo == 'LR':
+    if algo == 'Logistic Regression':
         return LogisticRegression(solver='lbfgs')
-    elif algo == 'LDA':
+    elif algo == 'Linear Discriminant':
         return LinearDiscriminantAnalysis()
-    elif algo == 'QDA':
+    elif algo == 'Quadratic Discriminant':
         return QuadraticDiscriminantAnalysis()
-    elif algo == 'KNN':
+    elif algo == 'K Neighbors Classifier':
         return KNeighborsClassifier(3)
-    elif algo == 'DecisionTree':
+    elif algo == 'Decision Tree':
         return DecisionTreeClassifier()
-    elif algo == 'NaiveBayes':
+    elif algo == 'Naive Bayes':
         return GaussianNB()
-    elif algo == 'LineatSVM':
+    elif algo == 'Linear SVM':
         return SVC(kernel="linear", C=0.025)
     elif algo == 'RBF_SVM':
         return SVC(gamma=2, C=1)
-    elif algo == 'GaussianProcess':
+    elif algo == 'Gaussian Process':
         return GaussianProcessClassifier(1.0 * RBF(1.0))
-    elif algo == 'NeuralNet':
+    elif algo == 'Neural Network':
         return MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-    elif algo == 'RandomForest':
+    elif algo == 'Random Forest':
         return RandomForestClassifier(max_depth=5, n_estimators=10)
-    elif algo == 'AdaBoost':
+    elif algo == 'Ada Boost':
         return AdaBoostClassifier()
     else:
         return 'Algorithm does not exist, try again'
